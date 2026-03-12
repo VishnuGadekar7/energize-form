@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENERGIZE — Employment Application</title>
+  <meta name="description" content="Apply for a position at ENERGIZE. Fill out our employment application form online.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green: #1a6b4a;
+      --green-dark: #145539;
+      --green-light: #e8f5ee;
+      --green-mid: #2d9d6a;
+      --bg: #f0f2f5;
+      --card: #ffffff;
+      --text: #1e293b;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --success-bg: #f0fdf4;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.04);
+      --shadow-lg: 0 4px 24px rgba(0,0,0,.08);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Header ───────────────────────────────────────── */
+    .app-header {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+      color: #fff;
+      padding: 28px 24px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255,255,255,.08) 0%, transparent 60%),
+                  radial-gradient(circle at 80% 20%, rgba(255,255,255,.05) 0%, transparent 50%);
+    }
+    .app-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      position: relative;
+    }
+    .app-header p {
+      font-size: .95rem;
+      opacity: .85;
+      margin-top: 6px;
+      position: relative;
+    }
+
+    /* ── Progress Bar ─────────────────────────────────── */
+    .progress-container {
+      background: var(--card);
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .progress-step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: default;
+      position: relative;
+    }
+    .progress-step .circle {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: .8rem;
+      background: var(--border);
+      color: var(--text-light);
+      transition: all .35s ease;
+      flex-shrink: 0;
+    }
+    .progress-step.active .circle {
+      background: var(--green);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(26,107,74,.18);
+    }
+    .progress-step.completed .circle {
+      background: var(--green-mid);
+      color: #fff;
+    }
+    .progress-step .step-label {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--text-light);
+      display: none;
+    }
+    .progress-step.active .step-label { color: var(--green); }
+    .progress-step.completed .step-label { color: var(--green-mid); }
+    .progress-line {
+      width: 40px; height: 3px;
+      background: var(--border);
+      margin: 0 6px;
+      border-radius: 2px;
+      transition: background .35s ease;
+    }
+    .progress-line.filled { background: var(--green-mid); }
+    @media (min-width: 640px) {
+      .progress-step .step-label { display: block; }
+      .progress-line { width: 48px; }
+    }
+
+    /* ── Form Container ───────────────────────────────── */
+    .form-wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+    .step-section {
+      display: none;
+      animation: fadeUp .35s ease;
+    }
+    .step-section.active { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 28px 24px;
+      margin-bottom: 20px;
+    }
+    .section-card h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem;
+      color: var(--green);
+      margin-bottom: 4px;
+    }
+    .section-card .section-desc {
+      font-size: .82rem;
+      color: var(--text-light);
+      margin-bottom: 20px;
+    }
+
+    /* ── Form Grid ────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .cols-2 { grid-template-columns: 1fr 1fr; }
+    .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    @media (max-width: 700px) {
+      .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; }
+    }
+    .span-2 { grid-column: span 2; }
+    .span-3 { grid-column: span 3; }
+    .span-full { grid-column: 1 / -1; }
+    @media (max-width: 700px) {
+      .span-2, .span-3 { grid-column: span 1; }
+    }
+
+    /* ── Form Fields ──────────────────────────────────── */
+    .field { display: flex; flex-direction: column; }
+    .field label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 5px;
+      letter-spacing: .2px;
+    }
+    .field label .req { color: var(--danger); margin-left: 2px; }
+    .field input, .field select, .field textarea {
+      padding: 10px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(26,107,74,.1);
+    }
+    .field input.error, .field select.error, .field textarea.error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px rgba(220,38,38,.08);
+    }
+    .field textarea { resize: vertical; min-height: 70px; }
+    .field select { cursor: pointer; }
+    .field small { font-size: .72rem; color: var(--text-light); margin-top: 3px; }
+
+    /* ── Photo Upload ─────────────────────────────────── */
+    .photo-upload {
+      display: flex; align-items: flex-start; gap: 20px;
+      padding: 16px; border: 2px dashed var(--border); border-radius: var(--radius);
+      background: #fafbfc; transition: border-color .2s;
+    }
+    .photo-upload:hover { border-color: var(--green); }
+    .photo-preview {
+      width: 100px; height: 120px;
+      border-radius: 8px; overflow: hidden; background: var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+    .photo-preview .placeholder { font-size: .7rem; color: var(--text-light); text-align: center; padding: 8px; }
+    .photo-info { flex: 1; }
+    .photo-info .upload-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; background: var(--green); color: #fff;
+      border: none; border-radius: 8px; font-size: .82rem;
+      font-weight: 600; cursor: pointer; transition: background .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .photo-info .upload-btn:hover { background: var(--green-dark); }
+    .photo-info p { font-size: .72rem; color: var(--text-light); margin-top: 6px; }
+    #photoInput { display: none; }
+
+    /* ── Dynamic Table ────────────────────────────────── */
+    .dynamic-section { margin-top: 16px; }
+    .dynamic-section h3 {
+      font-size: .92rem; font-weight: 700; color: var(--text);
+      margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+    }
+    .dynamic-table-wrap { overflow-x: auto; }
+    .dynamic-table {
+      width: 100%; border-collapse: collapse; font-size: .82rem;
+      min-width: 500px;
+    }
+    .dynamic-table th {
+      background: var(--green-light);
+      color: var(--green);
+      padding: 10px 10px;
+      text-align: left;
+      font-weight: 700;
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      border-bottom: 2px solid #c8e6d5;
+    }
+    .dynamic-table td {
+      padding: 6px 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dynamic-table input, .dynamic-table select {
+      width: 100%; padding: 7px 9px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px; font-size: .82rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    .dynamic-table input:focus, .dynamic-table select:focus {
+      border-color: var(--green);
+    }
+    .btn-add, .btn-remove {
+      border: none; border-radius: 6px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-weight: 600;
+      font-size: .78rem; padding: 6px 14px; transition: all .2s;
+    }
+    .btn-add {
+      background: var(--green-light); color: var(--green); margin-top: 8px;
+    }
+    .btn-add:hover { background: #d1eee0; }
+    .btn-remove {
+      background: var(--danger-bg); color: var(--danger); padding: 4px 10px;
+    }
+    .btn-remove:hover { background: #fecaca; }
+
+    /* ── Radio / Checkbox groups ───────────────────────── */
+    .radio-group, .checkbox-group {
+      display: flex; gap: 16px; flex-wrap: wrap; align-items: center; padding-top: 4px;
+    }
+    .radio-group label, .checkbox-group label {
+      display: flex; align-items: center; gap: 6px;
+      font-weight: 400; cursor: pointer; font-size: .88rem;
+    }
+    .radio-group input, .checkbox-group input { accent-color: var(--green); }
+
+    /* ── Navigation ───────────────────────────────────── */
+    .nav-buttons {
+      display: flex; justify-content: space-between; margin-top: 24px; gap: 12px;
+    }
+    .btn {
+      padding: 12px 32px; border-radius: 10px; font-family: 'DM Sans', sans-serif;
+      font-size: .92rem; font-weight: 600; cursor: pointer; border: none;
+      transition: all .25s ease; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%);
+      color: #fff; box-shadow: 0 2px 8px rgba(26,107,74,.25);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(26,107,74,.3); }
+    .btn-secondary {
+      background: var(--card); color: var(--text); border: 1.5px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--bg); }
+    .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+    /* ── Spinner ───────────────────────────────────────── */
+    .spinner {
+      width: 20px; height: 20px; border: 2.5px solid rgba(255,255,255,.3);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin .6s linear infinite; display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Success / Error Screens ───────────────────────── */
+    .result-screen {
+      display: none; text-align: center; padding: 60px 24px;
+      max-width: 520px; margin: 40px auto;
+      background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+    }
+    .result-screen.active { display: block; animation: fadeUp .4s ease; }
+    .result-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 20px;
+    }
+    .result-screen.success .result-icon { background: var(--success-bg); color: var(--green); }
+    .result-screen.error .result-icon { background: var(--danger-bg); color: var(--danger); }
+    .result-screen h2 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .result-screen p { color: var(--text-light); font-size: .95rem; line-height: 1.6; }
+    .result-screen .btn { margin-top: 24px; }
+
+    /* ── Salary Grid ──────────────────────────────────── */
+    .salary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .salary-grid .sal-cell {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .salary-grid .sal-cell:nth-child(odd) { border-right: 1px solid var(--border); }
+    .salary-grid .sal-cell label {
+      font-size: .78rem; font-weight: 600; white-space: nowrap; min-width: 90px;
+    }
+    .salary-grid .sal-cell input {
+      flex: 1; padding: 7px 10px; border: 1.5px solid var(--border);
+      border-radius: 6px; font-size: .84rem; font-family: 'DM Sans', sans-serif;
+      outline: none; transition: border-color .2s;
+    }
+    .salary-grid .sal-cell input:focus { border-color: var(--green); }
+    .salary-grid .sal-total {
+      background: var(--green-light);
+    }
+    @media (max-width: 600px) {
+      .salary-grid { grid-template-columns: 1fr; }
+      .salary-grid .sal-cell:nth-child(odd) { border-right: none; }
+    }
+
+    /* ── Misc ──────────────────────────────────────────── */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+    .error-toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--danger); color: #fff; padding: 12px 24px;
+      border-radius: 10px; font-size: .88rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); z-index: 9999;
+      animation: fadeUp .3s ease; display: none;
+    }
+    .error-toast.show { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ HEADER ═══ -->
+<header class="app-header">
+  <h1>ENERGIZE</h1>
+  <p>Employment Application Form</p>
+</header>
+
+<!-- ═══════════════════════════════════ PROGRESS BAR ═ -->
+<div class="progress-container" id="progressContainer">
+  <div class="progress-steps">
+    <div class="progress-step active" data-step="1"><span class="circle">1</span><span class="step-label">Personal</span></div>
+    <div class="progress-line" id="line1"></div>
+    <div class="progress-step" data-step="2"><span class="circle">2</span><span class="step-label">Education</span></div>
+    <div class="progress-line" id="line2"></div>
+    <div class="progress-step" data-step="3"><span class="circle">3</span><span class="step-label">Employment</span></div>
+    <div class="progress-line" id="line3"></div>
+    <div class="progress-step" data-step="4"><span class="circle">4</span><span class="step-label">Compensation</span></div>
+    <div class="progress-line" id="line4"></div>
+    <div class="progress-step" data-step="5"><span class="circle">5</span><span class="step-label">Submit</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ FORM ═════ -->
+<form id="applicationForm" enctype="multipart/form-data" novalidate>
+<div class="form-wrapper">
+
+<!-- ──────────────────── STEP 1: PERSONAL DATA ──────── -->
+<div class="step-section active" id="step1">
+
+  <div class="section-card">
+    <h2>Personal Data</h2>
+    <p class="section-desc">Tell us about yourself and the position you're applying for.</p>
+
+    <div class="form-grid cols-2">
+      <div class="field">
+        <label for="position">Position Applied For <span class="req">*</span></label>
+        <input type="text" id="position" name="position" required placeholder="e.g. Senior Engineer">
+      </div>
+      <div class="field">
+        <label for="source">Source</label>
+        <select id="source" name="source">
+          <option value="">Select source</option>
+          <option value="Job Portal">Job Portal</option>
+          <option value="Company Website">Company Website</option>
+          <option value="Employee Referral">Employee Referral</option>
+          <option value="Campus Placement">Campus Placement</option>
+          <option value="Newspaper Ad">Newspaper Ad</option>
+          <option value="Social Media">Social Media</option>
+          <option value="Recruitment Agency">Recruitment Agency</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Photo Upload -->
+    <div class="photo-upload" style="margin-top:16px;">
+      <div class="photo-preview" id="photoPreview">
+        <div class="placeholder">Passport<br>Photo</div>
+      </div>
+      <div class="photo-info">
+        <button type="button" class="upload-btn" onclick="document.getElementById('photoInput').click()">📷 Upload Photo</button>
+        <p>JPEG, PNG or WebP · Max 5 MB</p>
+        <input type="file" id="photoInput" name="Photograph" accept="image/jpeg,image/png,image/webp">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Full Name</h2>
+    <div class="form-grid cols-3">
+      <div class="field"><label for="surname">Surname <span class="req">*</span></label><input type="text" id="surname" name="surname" required></div>
+      <div class="field"><label for="firstName">First Name <span class="req">*</span></label><input type="text" id="firstName" name="firstName" required></div>
+      <div class="field"><label for="middleName">Middle Name</label><input type="text" id="middleName" name="middleName"></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Address</h2>
+    <div class="form-grid" style="gap:14px;">
+      <div class="field span-full"><label for="communicationAddress">Communication Address <span class="req">*</span></label><textarea id="communicationAddress" name="communicationAddress" rows="2" required></textarea></div>
+      <div class="field span-full"><label for="permanentAddress">Permanent Address</label><textarea id="permanentAddress" name="permanentAddress" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Contact Details</h2>
+    <div class="form-grid cols-4">
+      <div class="field"><label for="telRes">Tel (Residential)</label><input type="tel" id="telRes" name="telRes"></div>
+      <div class="field"><label for="telOffice">Tel (Office)</label><input type="tel" id="telOffice" name="telOffice"></div>
+      <div class="field"><label for="cell">Cell <span class="req">*</span></label><input type="tel" id="cell" name="cell" required></div>
+      <div class="field"><label for="email">Email <span class="req">*</span></label><input type="email" id="email" name="email" required></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Emergency Contact</h2>
+    <div class="form-grid cols-3">
+      <div class="field"><label for="emergencyName">Name</label><input type="text" id="emergencyName" name="emergencyName"></div>
+      <div class="field"><label for="emergencyRelation">Relation</label><input type="text" id="emergencyRelation" name="emergencyRelation"></div>
+      <div class="field"><label for="emergencyPhone">Phone</label><input type="tel" id="emergencyPhone" name="emergencyPhone"></div>
+    </div>
+    <div class="form-grid" style="margin-top:12px;">
+      <div class="field span-full"><label for="emergencyAddress">Address</label><textarea id="emergencyAddress" name="emergencyAddress" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Identity &amp; Personal Info</h2>
+    <div class="form-grid cols-2">
+      <div class="field"><label for="aadhaarNo">Aadhaar No</label><input type="text" id="aadhaarNo" name="aadhaarNo" maxlength="14"></div>
+      <div class="field"><label for="panNo">PAN No</label><input type="text" id="panNo" name="panNo" maxlength="10" style="text-transform:uppercase;"></div>
+    </div>
+    <div class="form-grid cols-4" style="margin-top:12px;">
+      <div class="field"><label for="dob">Date of Birth <span class="req">*</span></label><input type="date" id="dob" name="dob" required></div>
+      <div class="field"><label for="placeOfBirth">Place of Birth</label><input type="text" id="placeOfBirth" name="placeOfBirth"></div>
+      <div class="field"><label for="nationality">Nationality</label><input type="text" id="nationality" name="nationality" value="Indian"></div>
+      <div class="field">
+        <label for="maritalStatus">Marital Status</label>
+        <select id="maritalStatus" name="maritalStatus">
+          <option value="">Select</option>
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Divorced">Divorced</option>
+          <option value="Widowed">Widowed</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-grid cols-4" style="margin-top:12px;">
+      <div class="field"><label for="numberOfChildren">No. of Children</label><input type="number" id="numberOfChildren" name="numberOfChildren" min="0"></div>
+      <div class="field"><label for="ageOfChildren">Age of Children</label><input type="text" id="ageOfChildren" name="ageOfChildren" placeholder="e.g. 5, 8"></div>
+      <div class="field">
+        <label for="bloodGroup">Blood Group</label>
+        <select id="bloodGroup" name="bloodGroup">
+          <option value="">Select</option>
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </div>
+      <div class="field"><label for="identificationMark">Identification Mark</label><input type="text" id="identificationMark" name="identificationMark"></div>
+    </div>
+    <div class="form-grid cols-2" style="margin-top:12px;">
+      <div class="field"><label for="height">Height</label><input type="text" id="height" name="height" placeholder="e.g. 5'8&quot;"></div>
+      <div class="field"><label for="weight">Weight</label><input type="text" id="weight" name="weight" placeholder="e.g. 70 kg"></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Family Details</h2>
+    <div class="form-grid cols-2">
+      <div class="field"><label for="fatherName">Father's Name</label><input type="text" id="fatherName" name="fatherName"></div>
+      <div class="field"><label for="fatherOccupation">Father's Occupation</label><input type="text" id="fatherOccupation" name="fatherOccupation"></div>
+      <div class="field"><label for="spouseName">Spouse Name</label><input type="text" id="spouseName" name="spouseName"></div>
+      <div class="field"><label for="spouseOccupation">Spouse Occupation</label><input type="text" id="spouseOccupation" name="spouseOccupation"></div>
+    </div>
+    <div class="form-grid" style="margin-top:12px;">
+      <div class="field span-full"><label for="spouseQualification">Spouse Qualification</label><input type="text" id="spouseQualification" name="spouseQualification"></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Additional Information</h2>
+    <div class="form-grid" style="gap:14px;">
+      <div class="field span-full"><label for="relativeInCompany">Relative in Company (if any, give details)</label><textarea id="relativeInCompany" name="relativeInCompany" rows="2"></textarea></div>
+      <div class="field span-full">
+        <label>Previously Employed in this Company?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="previouslyEmployed" value="Yes"> Yes</label>
+          <label><input type="radio" name="previouslyEmployed" value="No" checked> No</label>
+        </div>
+      </div>
+      <div class="field span-full"><label for="previousInterview">Previous Interview Details (if any)</label><input type="text" id="previousInterview" name="previousInterview"></div>
+      <div class="field span-full"><label for="healthHistory">Health History</label><textarea id="healthHistory" name="healthHistory" rows="2" placeholder="Mention any major illnesses, surgeries, etc."></textarea></div>
+      <div class="field span-full"><label for="hobbies">Hobbies / Extracurricular Activities</label><textarea id="hobbies" name="hobbies" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Languages Known</h2>
+    <p class="section-desc">Add languages you can speak, read, or write.</p>
+    <div class="dynamic-section" id="languagesSection">
+      <div class="dynamic-table-wrap">
+        <table class="dynamic-table">
+          <thead><tr><th>Language</th><th>Speak</th><th>Read</th><th>Write</th><th></th></tr></thead>
+          <tbody id="languagesBody">
+            <tr>
+              <td><input type="text" placeholder="e.g. English"></td>
+              <td><select><option value="">–</option><option>Basic</option><option>Fluent</option><option>Native</option></select></td>
+              <td><select><option value="">–</option><option>Basic</option><option>Fluent</option><option>Native</option></select></td>
+              <td><select><option value="">–</option><option>Basic</option><option>Fluent</option><option>Native</option></select></td>
+              <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn-add" onclick="addLanguageRow()">+ Add Language</button>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <span></span>
+    <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next →</button>
+  </div>
+</div>
+
+<!-- ──────────────────── STEP 2: EDUCATION ──────────── -->
+<div class="step-section" id="step2">
+
+  <div class="section-card">
+    <h2>Educational Qualifications</h2>
+    <p class="section-desc">List your academic qualifications starting with the most recent.</p>
+    <div class="dynamic-section">
+      <div class="dynamic-table-wrap">
+        <table class="dynamic-table">
+          <thead><tr><th>Exam / Degree</th><th>Institute / Board</th><th>Year</th><th>Main Subjects</th><th>%</th><th></th></tr></thead>
+          <tbody id="educationBody">
+            <tr>
+              <td><input type="text"></td><td><input type="text"></td><td><input type="text" style="width:70px;"></td>
+              <td><input type="text"></td><td><input type="text" style="width:60px;"></td>
+              <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn-add" onclick="addEducationRow()">+ Add Qualification</button>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Other Details</h2>
+    <div class="form-grid" style="gap:14px;">
+      <div class="field span-full"><label for="academicAchievements">Other Academic Achievements</label><textarea id="academicAchievements" name="academicAchievements" rows="2"></textarea></div>
+      <div class="field span-full"><label for="professionalMemberships">Professional Memberships</label><textarea id="professionalMemberships" name="professionalMemberships" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Practical Training / Internships</h2>
+    <div class="dynamic-section">
+      <div class="dynamic-table-wrap">
+        <table class="dynamic-table">
+          <thead><tr><th>Organisation</th><th>From</th><th>To</th><th>Training Details</th><th></th></tr></thead>
+          <tbody id="trainingBody">
+            <tr>
+              <td><input type="text"></td><td><input type="text" placeholder="MM/YY" style="width:80px;"></td>
+              <td><input type="text" placeholder="MM/YY" style="width:80px;"></td><td><input type="text"></td>
+              <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn-add" onclick="addTrainingRow()">+ Add Training</button>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button type="button" class="btn btn-secondary" onclick="goToStep(1)">← Previous</button>
+    <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next →</button>
+  </div>
+</div>
+
+<!-- ──────────────────── STEP 3: EMPLOYMENT ─────────── -->
+<div class="step-section" id="step3">
+
+  <div class="section-card">
+    <h2>Employment History</h2>
+    <p class="section-desc">Begin with your present/most recent employer. Maximum 5 entries.</p>
+    <div class="dynamic-section">
+      <div class="dynamic-table-wrap">
+        <table class="dynamic-table">
+          <thead><tr><th>#</th><th>Organisation</th><th>Designation</th><th>From</th><th>To</th><th>Last Salary</th><th>Reason for Change</th><th></th></tr></thead>
+          <tbody id="employmentBody">
+            <tr>
+              <td style="text-align:center;font-weight:700;">a</td>
+              <td><input type="text"></td><td><input type="text"></td>
+              <td><input type="text" placeholder="MM/YY" style="width:76px;"></td>
+              <td><input type="text" placeholder="MM/YY" style="width:76px;"></td>
+              <td><input type="text" style="width:90px;"></td>
+              <td><input type="text"></td>
+              <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button type="button" class="btn-add" onclick="addEmploymentRow()">+ Add Employer</button>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="form-grid cols-2">
+      <div class="field">
+        <label for="totalExperience">Total Experience (in years) <span class="req">*</span></label>
+        <input type="text" id="totalExperience" name="totalExperience" required placeholder="e.g. 5 years 3 months">
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button type="button" class="btn btn-secondary" onclick="goToStep(2)">← Previous</button>
+    <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next →</button>
+  </div>
+</div>
+
+<!-- ──────────────────── STEP 4: COMPENSATION ──────── -->
+<div class="step-section" id="step4">
+
+  <div class="section-card">
+    <h2>Present Emoluments</h2>
+    <p class="section-desc">Monthly salary breakup with your current employer.</p>
+    <div class="salary-grid">
+      <div class="sal-cell"><label for="salBasic">Basic</label><input type="text" id="salBasic" name="salBasic"></div>
+      <div class="sal-cell"><label for="salLunch">Lunch</label><input type="text" id="salLunch" name="salLunch"></div>
+      <div class="sal-cell"><label for="salDA">DA</label><input type="text" id="salDA" name="salDA"></div>
+      <div class="sal-cell"><label for="salEntertainment">Entertainment</label><input type="text" id="salEntertainment" name="salEntertainment"></div>
+      <div class="sal-cell"><label for="salHRA">HRA</label><input type="text" id="salHRA" name="salHRA"></div>
+      <div class="sal-cell"><label for="salFurnishing">Furnishing</label><input type="text" id="salFurnishing" name="salFurnishing"></div>
+      <div class="sal-cell"><label for="salConveyance">Conveyance</label><input type="text" id="salConveyance" name="salConveyance"></div>
+      <div class="sal-cell"><label for="salOther">Other</label><input type="text" id="salOther" name="salOther"></div>
+      <div class="sal-cell"><label for="salEducation">Education</label><input type="text" id="salEducation" name="salEducation"></div>
+      <div class="sal-cell"><label for="salLTA">LTA</label><input type="text" id="salLTA" name="salLTA"></div>
+      <div class="sal-cell"><label for="salMedical">Medical</label><input type="text" id="salMedical" name="salMedical"></div>
+      <div class="sal-cell"><label for="salPF">PF (Monthly)</label><input type="text" id="salPF" name="salPF"></div>
+      <div class="sal-cell"><label for="salSuperannuation">Superannuation</label><input type="text" id="salSuperannuation" name="salSuperannuation"></div>
+      <div class="sal-cell"><label>&nbsp;</label><span></span></div>
+      <div class="sal-cell sal-total"><label for="salGross"><strong>GROSS (Rs.)</strong></label><input type="text" id="salGross" name="salGross"></div>
+      <div class="sal-cell sal-total"><label for="salAnnualCTC"><strong>Annual CTC</strong></label><input type="text" id="salAnnualCTC" name="salAnnualCTC"></div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="form-grid" style="gap:14px;">
+      <div class="field span-full"><label for="otherPerks">Other Non-Quantifiable Perks</label><textarea id="otherPerks" name="otherPerks" rows="2"></textarea></div>
+      <div class="field span-full"><label for="expectedSalary">Expected Salary &amp; Perks <span class="req">*</span></label><input type="text" id="expectedSalary" name="expectedSalary" required></div>
+      <div class="field span-full"><label for="joiningDate">Notice Period / When Can You Join?</label><input type="text" id="joiningDate" name="joiningDate" placeholder="e.g. 30 days / Immediate"></div>
+      <div class="field span-full"><label for="additionalInfo">Any Other Relevant Information</label><textarea id="additionalInfo" name="additionalInfo" rows="2"></textarea></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button type="button" class="btn btn-secondary" onclick="goToStep(3)">← Previous</button>
+    <button type="button" class="btn btn-primary" onclick="goToStep(5)">Next →</button>
+  </div>
+</div>
+
+<!-- ──────────────────── STEP 5: REFERENCES ─────────── -->
+<div class="step-section" id="step5">
+
+  <div class="section-card">
+    <h2>References</h2>
+    <p class="section-desc">Provide two professional references who can vouch for you.</p>
+    <div class="form-grid cols-2">
+      <div class="field"><label for="refAName">(a) Name <span class="req">*</span></label><input type="text" id="refAName" name="refAName" required></div>
+      <div class="field"><label for="refAContact">(a) Contact Details</label><input type="text" id="refAContact" name="refAContact" placeholder="Phone / Email"></div>
+      <div class="field"><label for="refBName">(b) Name</label><input type="text" id="refBName" name="refBName"></div>
+      <div class="field"><label for="refBContact">(b) Contact Details</label><input type="text" id="refBContact" name="refBContact" placeholder="Phone / Email"></div>
+    </div>
+    <div class="form-grid" style="margin-top:14px;">
+      <div class="field span-full">
+        <label>Prior approval for contacting references?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="priorApproval" value="Yes"> Yes</label>
+          <label><input type="radio" name="priorApproval" value="No" checked> No</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <h2>Declaration</h2>
+    <div class="form-grid" style="gap:14px;">
+      <div class="field span-full">
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="declaration" required>
+            I certify that the particulars given above, to the best of my knowledge and belief, are correct. I understand that any misrepresentation may lead to disqualification or termination.
+          </label>
+        </div>
+      </div>
+      <div class="field" style="max-width:220px;"><label for="declarationDate">Date</label><input type="date" id="declarationDate" name="declarationDate"></div>
+      <div class="field span-full"><label for="signatureName">Full Name (as Signature) <span class="req">*</span></label><input type="text" id="signatureName" name="signatureName" required placeholder="Type your full name"></div>
+    </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button type="button" class="btn btn-secondary" onclick="goToStep(4)">← Previous</button>
+    <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitForm()">
+      <span id="submitText">Submit Application</span>
+      <div class="spinner" id="submitSpinner"></div>
+    </button>
+  </div>
+</div>
+
+</div><!-- .form-wrapper -->
+</form>
+
+<!-- ════════════════════════ RESULT SCREENS ══════════ -->
+<div class="result-screen success" id="successScreen">
+  <div class="result-icon">✓</div>
+  <h2>Application Submitted!</h2>
+  <p>Thank you for applying to ENERGIZE. Our HR team will review your application and contact you shortly.</p>
+  <button class="btn btn-primary" onclick="location.reload()">Submit Another Application</button>
+</div>
+<div class="result-screen error" id="errorScreen">
+  <div class="result-icon">✕</div>
+  <h2>Submission Failed</h2>
+  <p id="errorMessage">Something went wrong. Please try again.</p>
+  <button class="btn btn-primary" onclick="hideError()">Try Again</button>
+</div>
+
+<!-- Error Toast -->
+<div class="error-toast" id="errorToast"></div>
+
+<!-- ════════════════════════ JAVASCRIPT ══════════════ -->
+<script>
+  // ── Step Navigation ──────────────────────────────────
+  let currentStep = 1;
+  const totalSteps = 5;
+
+  function goToStep(step) {
+    // Validate current step before advancing
+    if (step > currentStep && !validateStep(currentStep)) return;
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep = step;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function updateProgress() {
+    document.querySelectorAll('.progress-step').forEach((el, i) => {
+      const s = i + 1;
+      el.classList.toggle('active', s === currentStep);
+      el.classList.toggle('completed', s < currentStep);
+    });
+    for (let i = 1; i < totalSteps; i++) {
+      document.getElementById('line' + i).classList.toggle('filled', i < currentStep);
+    }
+  }
+
+  // ── Validation ───────────────────────────────────────
+  function validateStep(step) {
+    const section = document.getElementById('step' + step);
+    const required = section.querySelectorAll('[required]');
+    let valid = true;
+    required.forEach(f => {
+      if (f.type === 'checkbox' && !f.checked) {
+        f.classList.add('error');
+        valid = false;
+      } else if (!f.value.trim()) {
+        f.classList.add('error');
+        valid = false;
+      } else {
+        f.classList.remove('error');
+      }
+    });
+    if (!valid) showToast('Please fill in all required fields.');
+    return valid;
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('errorToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── Photo Preview ────────────────────────────────────
+  document.getElementById('photoInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.getElementById('photoPreview').innerHTML =
+        '<img src="' + ev.target.result + '" alt="Photo preview">';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ── Auto-fill today's date ───────────────────────────
+  document.getElementById('declarationDate').value = new Date().toISOString().split('T')[0];
+
+  // ── Dynamic Rows ─────────────────────────────────────
+  function addLanguageRow() {
+    const body = document.getElementById('languagesBody');
+    if (body.rows.length >= 6) return showToast('Maximum 6 language entries.');
+    const row = body.insertRow();
+    row.innerHTML = `
+      <td><input type="text" placeholder="e.g. Hindi"></td>
+      <td><select><option value="">–</option><option>Basic</option><option>Fluent</option><option>Native</option></select></td>
+      <td><select><option value="">–</option><option>Basic</option><option>Fluent</option><option>Native</option></select></td>
+      <td><select><option value="">–</option><option>Basic</option><option>Fluent</option><option>Native</option></select></td>
+      <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>`;
+  }
+
+  function addEducationRow() {
+    const body = document.getElementById('educationBody');
+    if (body.rows.length >= 8) return showToast('Maximum 8 education entries.');
+    const row = body.insertRow();
+    row.innerHTML = `
+      <td><input type="text"></td><td><input type="text"></td><td><input type="text" style="width:70px;"></td>
+      <td><input type="text"></td><td><input type="text" style="width:60px;"></td>
+      <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>`;
+  }
+
+  function addTrainingRow() {
+    const body = document.getElementById('trainingBody');
+    if (body.rows.length >= 5) return showToast('Maximum 5 training entries.');
+    const row = body.insertRow();
+    row.innerHTML = `
+      <td><input type="text"></td><td><input type="text" placeholder="MM/YY" style="width:80px;"></td>
+      <td><input type="text" placeholder="MM/YY" style="width:80px;"></td><td><input type="text"></td>
+      <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>`;
+  }
+
+  let empCount = 1;
+  function addEmploymentRow() {
+    const body = document.getElementById('employmentBody');
+    if (body.rows.length >= 5) return showToast('Maximum 5 employer entries.');
+    const labels = ['a','b','c','d','e'];
+    empCount = body.rows.length;
+    const row = body.insertRow();
+    row.innerHTML = `
+      <td style="text-align:center;font-weight:700;">${labels[empCount]}</td>
+      <td><input type="text"></td><td><input type="text"></td>
+      <td><input type="text" placeholder="MM/YY" style="width:76px;"></td>
+      <td><input type="text" placeholder="MM/YY" style="width:76px;"></td>
+      <td><input type="text" style="width:90px;"></td>
+      <td><input type="text"></td>
+      <td><button type="button" class="btn-remove" onclick="removeRow(this)">✕</button></td>`;
+  }
+
+  function removeRow(btn) {
+    const row = btn.closest('tr');
+    const tbody = row.closest('tbody');
+    if (tbody.rows.length > 1) row.remove();
+  }
+
+  // ── Collect Dynamic Table Data ───────────────────────
+  function collectLanguages() {
+    const rows = document.querySelectorAll('#languagesBody tr');
+    return Array.from(rows).map(r => {
+      const inputs = r.querySelectorAll('input, select');
+      return {
+        language: inputs[0]?.value || '',
+        speak: inputs[1]?.value || '',
+        read: inputs[2]?.value || '',
+        write: inputs[3]?.value || ''
+      };
+    }).filter(l => l.language);
+  }
+
+  function collectEducation() {
+    const rows = document.querySelectorAll('#educationBody tr');
+    return Array.from(rows).map(r => {
+      const inputs = r.querySelectorAll('input');
+      return {
+        exam: inputs[0]?.value || '',
+        institute: inputs[1]?.value || '',
+        year: inputs[2]?.value || '',
+        subjects: inputs[3]?.value || '',
+        percentage: inputs[4]?.value || ''
+      };
+    }).filter(e => e.exam);
+  }
+
+  function collectTraining() {
+    const rows = document.querySelectorAll('#trainingBody tr');
+    return Array.from(rows).map(r => {
+      const inputs = r.querySelectorAll('input');
+      return {
+        organisation: inputs[0]?.value || '',
+        from: inputs[1]?.value || '',
+        to: inputs[2]?.value || '',
+        details: inputs[3]?.value || ''
+      };
+    }).filter(t => t.organisation);
+  }
+
+  function collectEmployment() {
+    const rows = document.querySelectorAll('#employmentBody tr');
+    return Array.from(rows).map(r => {
+      const inputs = r.querySelectorAll('input');
+      return {
+        organisation: inputs[0]?.value || '',
+        designation: inputs[1]?.value || '',
+        from: inputs[2]?.value || '',
+        to: inputs[3]?.value || '',
+        salary: inputs[4]?.value || '',
+        reason: inputs[5]?.value || ''
+      };
+    }).filter(e => e.organisation);
+  }
+
+  // ── Submit Form ──────────────────────────────────────
+  async function submitForm() {
+    // Validate all steps
+    for (let s = 1; s <= totalSteps; s++) {
+      if (!validateStep(s)) {
+        goToStep(s);
+        return;
+      }
+    }
+
+    const btn = document.getElementById('submitBtn');
+    const txt = document.getElementById('submitText');
+    const spin = document.getElementById('submitSpinner');
+    btn.disabled = true;
+    txt.textContent = 'Submitting...';
+    spin.style.display = 'block';
+
+    try {
+      const form = document.getElementById('applicationForm');
+      const fd = new FormData(form);
+
+      // Append dynamic table data as JSON strings
+      fd.append('languages', JSON.stringify(collectLanguages()));
+      fd.append('education', JSON.stringify(collectEducation()));
+      fd.append('training', JSON.stringify(collectTraining()));
+      fd.append('employment', JSON.stringify(collectEmployment()));
+
+      const res = await fetch('/submit', { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (data.success) {
+        document.getElementById('applicationForm').style.display = 'none';
+        document.getElementById('progressContainer').style.display = 'none';
+        document.getElementById('successScreen').classList.add('active');
+      } else {
+        throw new Error(data.error || 'Submission failed');
+      }
+    } catch (err) {
+      document.getElementById('errorMessage').textContent = err.message;
+      document.getElementById('applicationForm').style.display = 'none';
+      document.getElementById('progressContainer').style.display = 'none';
+      document.getElementById('errorScreen').classList.add('active');
+    } finally {
+      btn.disabled = false;
+      txt.textContent = 'Submit Application';
+      spin.style.display = 'none';
+    }
+  }
+
+  function hideError() {
+    document.getElementById('errorScreen').classList.remove('active');
+    document.getElementById('applicationForm').style.display = '';
+    document.getElementById('progressContainer').style.display = '';
+  }
+
+  // ── Clear error styling on focus ─────────────────────
+  document.addEventListener('focusin', (e) => {
+    if (e.target.classList?.contains('error')) e.target.classList.remove('error');
+  });
+</script>
+</body>
+</html>
