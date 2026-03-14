@@ -1,5 +1,7 @@
-const nodemailer = require('nodemailer');
-const dns = require('dns');
+const { Resend } = require('resend');
+
+// Initialize Resend with the API key from environment variables
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
  * Send the generated PDF to the HR email address.
@@ -7,24 +9,6 @@ const dns = require('dns');
  * @param {Object} formData  - The submitted form fields
  */
 async function sendEmail(pdfBuffer, formData) {
-  const transporter = nodemailer.createTransport({
-    host: '142.251.2.108', // Explicit IPv4 address for smtp.gmail.com to bypass Render's IPv6 block
-    port: 465,
-    secure: true, 
-    pool: true, 
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-    // Force Node to use IPv4 only, since Render IPv6 IPs often get blocked by Gmail
-    ignoreTLS: false,
-    requireTLS: true,
-    name: 'energize-hr',
-  });
-
   const firstName = formData.firstName || 'Applicant';
   const surname = formData.surname || '';
   const position = formData.position || 'N/A';
@@ -96,23 +80,31 @@ async function sendEmail(pdfBuffer, formData) {
     </div>
   `;
 
-  const mailOptions = {
-    from: `Energize HR Portal <${process.env.GMAIL_USER}>`,
-    to: process.env.HR_EMAIL,
-    subject: `New Employment Application — ${fullName} for ${position}`,
-    html: htmlBody,
-    attachments: [
-      {
-        filename: `Application_${firstName}_${surname}.pdf`,
-        content: pdfBuffer,
-        contentType: 'application/pdf',
-      },
-    ],
-  };
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'Energize HR Portal <onboarding@resend.dev>', // Resend provides this test email out of the box
+      to: process.env.HR_EMAIL, // Send to the HR email from your Render Environment Variables
+      subject: `New Employment Application — ${fullName} for ${position}`,
+      html: htmlBody,
+      attachments: [
+        {
+          filename: `Application_${firstName}_${surname}.pdf`,
+          content: pdfBuffer, // Resend handles raw buffers elegantly
+        },
+      ],
+    });
 
-  const info = await transporter.sendMail(mailOptions);
-  console.log('📧 Email message ID:', info.messageId);
-  return { success: true };
+    if (error) {
+      console.error('❌ Resend API Error:', error);
+      throw new Error(error.message);
+    }
+
+    console.log('📧 Email sent successfully via Resend. ID:', data.id);
+    return { success: true };
+  } catch (error) {
+    console.error('❌ Failed to send email via Resend:', error);
+    throw error;
+  }
 }
 
 module.exports = { sendEmail };
