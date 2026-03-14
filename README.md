@@ -68,6 +68,11 @@ node server.js
 
 Open **http://localhost:3000** in your browser.
 
+> 💡 **Troubleshooting Puppeteer (Chrome Error):** If you see an error about missing Chrome locally, run:
+> `npx puppeteer browsers install chrome`
+
+---
+
 ## Resend API Setup (Email)
 
 We use Resend to send emails reliably. You need a free Resend account and an API key.
