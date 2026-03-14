@@ -1,43 +1,11 @@
 const { buildTemplate } = require('./pdfTemplate');
-const fs = require('fs');
-
-/**
- * Find the Chrome executable on the local system.
- */
-function findChrome() {
-  // Allow explicit override via env
-  if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-    return process.env.PUPPETEER_EXECUTABLE_PATH;
-  }
-
-  // Common Windows Chrome paths
-  const winPaths = [
-    process.env['PROGRAMFILES(X86)'] + '\\Google\\Chrome\\Application\\chrome.exe',
-    process.env['PROGRAMFILES'] + '\\Google\\Chrome\\Application\\chrome.exe',
-    process.env.LOCALAPPDATA + '\\Google\\Chrome\\Application\\chrome.exe',
-  ];
-
-  // Common Linux paths (Render.com, etc.)
-  const linuxPaths = [
-    '/usr/bin/google-chrome-stable',
-    '/usr/bin/google-chrome',
-    '/usr/bin/chromium-browser',
-    '/usr/bin/chromium',
-  ];
-
-  const candidates = process.platform === 'win32' ? winPaths : linuxPaths;
-
-  for (const p of candidates) {
-    if (p && fs.existsSync(p)) return p;
-  }
-
-  throw new Error(
-    'Chrome not found. Install Google Chrome or set PUPPETEER_EXECUTABLE_PATH in your .env file.'
-  );
-}
+const puppeteer = require('puppeteer');
 
 /**
  * Generate a PDF buffer from form data using Puppeteer.
+ * Uses the bundled Chromium that ships with the 'puppeteer' package,
+ * so no system Chrome installation is needed.
+ *
  * @param {Object} data      – submitted form fields
  * @param {string|null} photoPath – absolute path to the uploaded photo
  * @returns {Promise<Buffer>} PDF file as buffer
@@ -46,13 +14,10 @@ async function generatePDF(data, photoPath) {
   let browser = null;
 
   try {
-    const puppeteer = require('puppeteer-core');
-    const executablePath = findChrome();
-    console.log('🌐 Using Chrome at:', executablePath);
+    console.log('🌐 Launching bundled Chromium via Puppeteer…');
 
     browser = await puppeteer.launch({
       headless: 'new',
-      executablePath,
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     });
 

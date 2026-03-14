@@ -1014,7 +1014,7 @@
       fd.append('training', JSON.stringify(collectTraining()));
       fd.append('employment', JSON.stringify(collectEmployment()));
 
-      const res = await fetch('/submit', { method: 'POST', body: fd });
+      const res = await fetch('https://energize-form.onrender.com/submit', { method: 'POST', body: fd });
       const data = await res.json();
 
       if (data.success) {
