@@ -78,8 +78,18 @@ app.post('/submit', upload.single('Photograph'), async (req, res) => {
         if (process.env.MONGODB_URI) {
           console.log('💾 Saving application to database (Background)...');
           try {
+            // Parse JSON fields from strings (sent via FormData)
+            const parsedData = { ...formData };
+            ['languages', 'education', 'training', 'employment'].forEach(key => {
+              if (parsedData[key]) {
+                try {
+                  parsedData[key] = JSON.parse(parsedData[key]);
+                } catch (e) {}
+              }
+            });
+
             const newApp = new Application({
-              ...formData,
+              ...parsedData,
               PhotographPath: photoPath
             });
             await newApp.save();

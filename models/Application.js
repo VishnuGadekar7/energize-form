@@ -1,65 +1,90 @@
 const mongoose = require('mongoose');
 
 const applicationSchema = new mongoose.Schema({
-  // Personal Data
-  Role: { type: String },
-  Location: { type: String },
-  AvailableDate: { type: String },
-  DesiredSalary: { type: String },
-  Name: { type: String },
-  EmailId: { type: String },
-  PhNO: { type: String },
-  AltPhNo: { type: String },
-  GovtIdType: { type: String },
-  GovtIdNo: { type: String },
-  ContactPersonName: { type: String },
-  ContactPersonNo: { type: String },
-  CurrentAddress: { type: String },
-  PermanentAddress: { type: String },
-  City: { type: String },
-  State: { type: String },
-  PinCode: { type: String },
+  // Step 1: Personal Data
+  position: String,
+  source: String,
+  surname: String,
+  firstName: String,
+  middleName: String,
+  communicationAddress: String,
+  permanentAddress: String,
+  telRes: String,
+  telOffice: String,
+  cell: String,
+  email: String,
+  emergencyName: String,
+  emergencyRelation: String,
+  emergencyPhone: String,
+  emergencyAddress: String,
+  aadhaarNo: String,
+  panNo: String,
+  dob: String,
+  placeOfBirth: String,
+  nationality: String,
+  maritalStatus: String,
+  numberOfChildren: Number,
+  ageOfChildren: String,
+  bloodGroup: String,
+  identificationMark: String,
+  height: String,
+  weight: String,
+  fatherName: String,
+  fatherOccupation: String,
+  spouseName: String,
+  spouseOccupation: String,
+  spouseQualification: String,
+  relativeInCompany: String,
+  previouslyEmployed: String,
+  previousInterview: String,
+  healthHistory: String,
+  hobbies: String,
 
-  // Education
-  Education: [{
-    Level: { type: String },
-    SchoolCityState: { type: String },
-    NoOfYears: { type: String },
-    DidYouGraduate: { type: String },
-    SubjectsStudied: { type: String }
-  }],
+  // Step 2: Education & Training
+  languages: [Object], // [{language, speak, read, write}]
+  education: [Object], // [{exam, institute, year, subjects, percentage}]
+  academicAchievements: String,
+  professionalMemberships: String,
+  training: [Object], // [{organisation, from, to, details}]
 
-  // Employment
-  Employment: [{
-    DateMonthYear: { type: String },
-    NameAndAddress: { type: String },
-    SalaryUponLeaving: { type: String },
-    Position: { type: String },
-    ReasonForLeaving: { type: String }
-  }],
+  // Step 3: Employment
+  employment: [Object], // [{organisation, designation, from, to, salary, reason}]
+  totalExperience: String,
 
-  // Special Skills
-  SpecialSkills: { type: String },
+  // Step 4: Compensation
+  salBasic: String,
+  salLunch: String,
+  salDA: String,
+  salEntertainment: String,
+  salHRA: String,
+  salFurnishing: String,
+  salConveyance: String,
+  salOther: String,
+  salEducation: String,
+  salLTA: String,
+  salMedical: String,
+  salPF: String,
+  salSuperannuation: String,
+  salGross: String,
+  salAnnualCTC: String,
+  otherPerks: String,
+  expectedSalary: String,
+  joiningDate: String,
+  additionalInfo: String,
 
-  // References
-  References: [{
-    Name: { type: String },
-    PhoneBus: { type: String },
-    YearsAcquainted: { type: String },
-    Title: { type: String },
-    CompanyName: { type: String }
-  }],
-  
-  // Others
-  HaveYouBeenConvicted: { type: String },
-  ConvictionDetails: { type: String },
-  ApplicantSignatureDate: { type: String },
-  
-  // File Path for Photograph
-  PhotographPath: { type: String },
-  
-  // Timestamps
+  // Step 5: References & Declaration
+  refAName: String,
+  refAContact: String,
+  refBName: String,
+  refBContact: String,
+  priorApproval: String,
+  declarationDate: String,
+  signatureName: String,
+
+  // File Path
+  PhotographPath: String,
+
   createdAt: { type: Date, default: Date.now }
-});
+}, { strict: false });
 
 module.exports = mongoose.model('Application', applicationSchema);
