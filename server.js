@@ -6,9 +6,20 @@ const path = require('path');
 const fs = require('fs');
 const { generatePDF } = require('./generatePDF');
 const { sendEmail } = require('./emailSender');
+const mongoose = require('mongoose');
+const Application = require('./models/Application');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ── Database Connection ────────────────────────────────
+if (process.env.MONGODB_URI) {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('📦 Connected to MongoDB'))
+    .catch(err => console.error('❌ MongoDB connection error:', err));
+} else {
+  console.log('⚠️ No MONGODB_URI provided. Skipping database connection.');
+}
 
 // ── Middleware ──────────────────────────────────────────
 app.use(cors());
@@ -63,6 +74,21 @@ app.post('/submit', upload.single('Photograph'), async (req, res) => {
     // ── Run Heavy Operations Asynchronously in Background ──
     (async () => {
       try {
+        // Save to database
+        if (process.env.MONGODB_URI) {
+          console.log('💾 Saving application to database (Background)...');
+          try {
+            const newApp = new Application({
+              ...formData,
+              PhotographPath: photoPath
+            });
+            await newApp.save();
+            console.log('✅ Application saved to database (Background)');
+          } catch (dbErr) {
+            console.error('❌ Failed to save to database:', dbErr.message);
+          }
+        }
+
         // Generate PDF
         console.log('📄 Generating PDF (Background)...');
         const pdfBuffer = await generatePDF(formData, photoPath);

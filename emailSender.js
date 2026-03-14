@@ -1,7 +1,10 @@
 const { Resend } = require('resend');
 
-// Initialize Resend with the API key from environment variables
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Do not initialize unconditionally, to prevent server crash if env var is missing
+let resend;
+if (process.env.RESEND_API_KEY) {
+  resend = new Resend(process.env.RESEND_API_KEY);
+}
 
 /**
  * Send the generated PDF to the HR email address.
@@ -9,6 +12,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
  * @param {Object} formData  - The submitted form fields
  */
 async function sendEmail(pdfBuffer, formData) {
+  if (!resend) {
+    console.error('❌ RESEND_API_KEY is not defined. Email will not be sent.');
+    throw new Error('Missing RESEND_API_KEY environment variable');
+  }
   const firstName = formData.firstName || 'Applicant';
   const surname = formData.surname || '';
   const position = formData.position || 'N/A';

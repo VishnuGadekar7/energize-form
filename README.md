@@ -56,8 +56,7 @@ Edit `.env` and fill in your values:
 
 | Variable | Description |
 |---|---|
-| `GMAIL_USER` | Your Gmail address (e.g. `hr-portal@gmail.com`) |
-| `GMAIL_APP_PASSWORD` | Gmail App Password (see below) |
+| `RESEND_API_KEY` | Your Resend.com API Key (see below) |
 | `HR_EMAIL` | Recipient email for applications |
 | `PORT` | Server port (default: `3000`) |
 
@@ -69,22 +68,35 @@ node server.js
 
 Open **http://localhost:3000** in your browser.
 
----
+## Resend API Setup (Email)
 
-## Gmail App Password Setup
+We use Resend to send emails reliably. You need a free Resend account and an API key.
 
-You **must** use a Gmail App Password (not your regular password). Here's how:
-
-1. Go to [https://myaccount.google.com/security](https://myaccount.google.com/security)
-2. Make sure **2-Step Verification** is turned ON
-3. Go to [https://myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
-4. Select **"Mail"** as the app and **"Other"** as the device
-5. Enter a name like `Energize HR Portal`
-6. Click **Generate**
-7. Copy the 16-character password (e.g. `abcd efgh ijkl mnop`)
-8. Paste it into your `.env` as `GMAIL_APP_PASSWORD`
+1. Go to [https://resend.com](https://resend.com) and sign up.
+2. In the dashboard, click on **API Keys** in the left sidebar.
+3. Click **Create API Key**.
+4. Give it a name like `Energize HR Portal` and assign it "Full Access" or "Sending access".
+5. Copy the generated API string (e.g., `re_xxxxxxxxx`).
+6. Paste it into your `.env` file as `RESEND_API_KEY`.
 
 > ⚠️ **Never** commit your `.env` file to Git. It's already in `.gitignore`.
+
+---
+
+## MongoDB Atlas Setup (Database)
+
+To store applicant data securely, we use MongoDB. You need a free MongoDB Atlas cluster and its connection string.
+
+1. Go to [https://www.mongodb.com/atlas/database](https://www.mongodb.com/atlas/database) and sign up/log in.
+2. Click **Build a Database** (choose the FREE shared cluster).
+3. Once the cluster is created, go to **Database Access** (left sidebar) and create a new database user. Remember the password.
+4. Go to **Network Access** (left sidebar) and click **Add IP Address**. Choose **Allow Access from Anywhere** (0.0.0.0/0) so Render can connect to it.
+5. Go back to **Database** (left sidebar) and click the **Connect** button on your cluster.
+6. Choose **Connect your application** (Drivers).
+7. Copy the connection string provided. It will look something like this:
+   `mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority`
+8. Paste it into your `.env` file as `MONGODB_URI`.
+9. **CRITICAL:** Replace `<username>` and `<password>` in the connection string with the user credentials you created in Step 3. Add a database name (like `energize_db`) before the `?` if you wish.
 
 ---
 
@@ -131,11 +143,11 @@ Go to **Environment** tab and add:
 
 | Key | Value |
 |---|---|
-| `GMAIL_USER` | your Gmail address |
-| `GMAIL_APP_PASSWORD` | your 16-char app password |
+| `RESEND_API_KEY` | your Resend API key |
 | `HR_EMAIL` | hr@yourcompany.com |
 | `IS_PRODUCTION` | `true` |
 | `PUPPETEER_EXECUTABLE_PATH` | `/usr/bin/google-chrome-stable` |
+| `MONGODB_URI` | your MongoDB Atlas connection string |
 
 ### 4. Deploy
 
@@ -149,8 +161,9 @@ Click **Manual Deploy → Deploy latest commit**. Your app will be live at `http
 
 - **Runtime:** Node.js
 - **Framework:** Express.js
+- **Database:** MongoDB (Mongoose)
 - **PDF Generation:** Puppeteer (HTML → PDF)
-- **Email:** Nodemailer with Gmail SMTP
+- **Email:** Resend API
 - **File Upload:** Multer
 - **Frontend:** Vanilla HTML / CSS / JS
 - **Fonts:** DM Sans, DM Serif Display (Google Fonts)
