@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
 
 /**
  * Send the generated PDF to the HR email address.
@@ -7,15 +8,22 @@ const nodemailer = require('nodemailer');
  */
 async function sendEmail(pdfBuffer, formData) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail', // This handles the most optimal host/port mappings for Gmail
+    service: 'gmail',
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, // Use TLS directly
-    pool: true, // Reuse connections
+    secure: true, 
+    pool: true, 
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
+    // Force Node to use IPv4 only, since Render IPv6 IPs often get blocked by Gmail
+    ignoreTLS: false,
+    requireTLS: true,
+    name: 'energize-hr',
   });
 
   const firstName = formData.firstName || 'Applicant';
