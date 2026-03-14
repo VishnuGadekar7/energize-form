@@ -36,7 +36,10 @@ async function generatePDF(data, photoPath) {
     const html = buildTemplate(data, photoPath);
 
     // Set content and wait for images / styles
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+    await page.setContent(html, { 
+      waitUntil: 'networkidle2', // Waits till max 2 connections are open (faster than 0)
+      timeout: 0 // Disables the 30-second default navigation timeout
+    });
 
     // Generate PDF — A4, with background colors
     const pdfBuffer = await page.pdf({
