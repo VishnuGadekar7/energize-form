@@ -7,9 +7,11 @@ const nodemailer = require('nodemailer');
  */
 async function sendEmail(pdfBuffer, formData) {
   const transporter = nodemailer.createTransport({
+    service: 'gmail', // This handles the most optimal host/port mappings for Gmail
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true, // Use TLS directly
+    pool: true, // Reuse connections
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD,
