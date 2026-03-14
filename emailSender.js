@@ -8,8 +8,7 @@ const dns = require('dns');
  */
 async function sendEmail(pdfBuffer, formData) {
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
+    host: '142.251.2.108', // Explicit IPv4 address for smtp.gmail.com to bypass Render's IPv6 block
     port: 465,
     secure: true, 
     pool: true, 
