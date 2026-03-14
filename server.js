@@ -48,47 +48,47 @@ app.get('/', (req, res) => {
 });
 
 app.post('/submit', upload.single('Photograph'), async (req, res) => {
-  let photoPath = null;
-
   try {
     console.log('📝 Form submission received');
 
     const formData = req.body;
-    photoPath = req.file ? req.file.path : null;
+    const photoPath = req.file ? req.file.path : null;
 
-    // Generate PDF
-    console.log('📄 Generating PDF...');
-    const pdfBuffer = await generatePDF(formData, photoPath);
-    console.log('✅ PDF generated successfully');
-
-    // Send email
-    console.log('📧 Sending email to HR...');
-    await sendEmail(pdfBuffer, formData);
-    console.log('✅ Email sent successfully');
-
-    // Clean up temp photo
-    if (photoPath && fs.existsSync(photoPath)) {
-      fs.unlinkSync(photoPath);
-      console.log('🗑️  Temp photo deleted');
-    }
-
+    // Send the response IMMEDIATELY to prevent Render's 60-second timeout
     res.json({
       success: true,
-      message: 'Application submitted successfully',
+      message: 'Application submitted successfully. Processing in background.',
     });
-  } catch (error) {
-    console.error('❌ Submission error:', error.message);
 
-    // Clean up temp photo on error too
-    if (photoPath && fs.existsSync(photoPath)) {
+    // ── Run Heavy Operations Asynchronously in Background ──
+    (async () => {
       try {
-        fs.unlinkSync(photoPath);
-      } catch (_) {}
-    }
+        // Generate PDF
+        console.log('📄 Generating PDF (Background)...');
+        const pdfBuffer = await generatePDF(formData, photoPath);
+        console.log('✅ PDF generated successfully (Background)');
 
+        // Send email
+        console.log('📧 Sending email to HR (Background)...');
+        await sendEmail(pdfBuffer, formData);
+        console.log('✅ Email sent successfully (Background)');
+      } catch (bgError) {
+        console.error('❌ Background processing error:', bgError.message);
+      } finally {
+        // Clean up temp photo
+        if (photoPath && fs.existsSync(photoPath)) {
+          try {
+            fs.unlinkSync(photoPath);
+            console.log('🗑️  Temp photo deleted');
+          } catch (_) {}
+        }
+      }
+    })();
+  } catch (error) {
+    console.error('❌ Immediate submission error:', error.message);
     res.status(500).json({
       success: false,
-      error: error.message || 'Something went wrong. Please try again.',
+      error: 'Something went wrong processing your request.',
     });
   }
 });
