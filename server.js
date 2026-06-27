@@ -5,7 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { generatePDF } = require('./generatePDF');
-const { sendEmail } = require('./emailSender');
+const { sendEmail, sendApplicantConfirmation } = require('./emailSender');
 const mongoose = require('mongoose');
 const Application = require('./models/Application');
 
@@ -104,10 +104,19 @@ app.post('/submit', upload.single('Photograph'), async (req, res) => {
         const pdfBuffer = await generatePDF(formData, photoPath);
         console.log('✅ PDF generated successfully (Background)');
 
-        // Send email
+        // Send email to HR
         console.log('📧 Sending email to HR (Background)...');
         await sendEmail(pdfBuffer, formData);
-        console.log('✅ Email sent successfully (Background)');
+        console.log('✅ HR email sent successfully (Background)');
+
+        // Send confirmation email to applicant
+        console.log('📧 Sending confirmation email to applicant (Background)...');
+        try {
+          await sendApplicantConfirmation(formData);
+          console.log('✅ Applicant confirmation email sent (Background)');
+        } catch (confirmErr) {
+          console.error('❌ Failed to send applicant confirmation email:', confirmErr.message);
+        }
       } catch (bgError) {
         console.error('❌ Background processing error:', bgError.message);
       } finally {
